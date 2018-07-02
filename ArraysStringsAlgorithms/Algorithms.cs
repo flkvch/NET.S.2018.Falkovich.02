@@ -60,6 +60,11 @@ namespace ArraysStringsAlgorithms
         /// </returns>
         public static int[] FilterDigit(int digit, params int[] a)
         {
+            if (a.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(a));
+            }
+
             int[] temp = new int[] { };
             for (int i = 0; i < a.Length; i++)
             {
@@ -70,10 +75,6 @@ namespace ArraysStringsAlgorithms
                 }
             }
 
-            int a1 = 13;
-            string str = a1.ToString();
-            string str1 = "1";
-            str.Contains(str1);
             return temp;
         }
 
@@ -91,12 +92,16 @@ namespace ArraysStringsAlgorithms
         /// </returns>
         public static int[] FilterDigit2(int digit, params int[] a)
         {
+            if (a.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(a));
+            }
+
             int[] temp = new int[] { };
             for (int i = 0; i < a.Length; i++)
             {
                 string digits = a[i].ToString();
-                string dig = digit.ToString();
-                if (digits.Contains(dig))
+                if (digits.Contains(digit.ToString()))
                 {
                     Array.Resize(ref temp, temp.Length + 1);
                     temp[temp.Length - 1] = a[i];
@@ -121,12 +126,12 @@ namespace ArraysStringsAlgorithms
         {
             if (i > j)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("J parametr should be bigger than I");
             }
 
             if (i < 0 || j < 0 || i > NumBits - 1 || j > NumBits - 1)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("I or J parametrs should be from 0 to 31");
             }
         }
 
