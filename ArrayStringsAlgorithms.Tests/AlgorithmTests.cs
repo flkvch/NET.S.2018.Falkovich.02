@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArraysStringsAlgorithms.Tests
@@ -41,22 +43,24 @@ namespace ArraysStringsAlgorithms.Tests
         [TestMethod]
         public void FilterDigit_RandomArrayWithDigit_ArrayOnlyWithDigit()
         {
+            IEnumerable<int> actual = new int[] { 7, 1, 2, 3, 4, 5, 6, 7, 68, 69, 70, 15, 17 };
             int[] expected = { 7, 7, 70, 17 };
-            CollectionAssert.AreEqual(expected, Algorithms.FilterDigit(7, 7, 1, 2, 3, 4, 5, 6, 7, 68, 69, 70, 15, 17));
+            CollectionAssert.AreEqual(expected, Algorithms.Filter(actual, Algorithms.ContainsDigit).ToArray());
         }
 
         [TestMethod]
         public void FilterDigit_RandomArrayWoutDigit_EmptyArray()
-        {       
+        {
+            IEnumerable<int> actual = new int[] { 1, 2, 3, 4, 5, 6, 68, 69, 15 };
             int[] expected = { };
-            CollectionAssert.AreEqual(expected, Algorithms.FilterDigit(7, 1, 2, 3, 4, 5, 6, 68, 69, 15));
+            CollectionAssert.AreEqual(expected, Algorithms.Filter(actual, Algorithms.ContainsDigit).ToArray());
         }
 
         [TestMethod]
         public void FilterDigit_ArrayOnlyWithDigit_UnchangedArray()
         {
-            int[] expected = { 7, 7, 70, 17 };
-            CollectionAssert.AreEqual(expected, Algorithms.FilterDigit(7, 7, 7, 70, 17));
+            int[] expected = { 7, 70, 17 };
+            CollectionAssert.AreEqual(expected, Algorithms.Filter(expected, Algorithms.ContainsDigit).ToArray());
         }
 
         [TestMethod]
@@ -70,7 +74,7 @@ namespace ArraysStringsAlgorithms.Tests
                 a[i] = rnd.Next(-Length / 2, Length / 2);
             }
 
-            a = Algorithms.FilterDigit(7, a);    
+            a = Algorithms.Filter(a, Algorithms.ContainsDigit).ToArray();
             bool check = true;
             foreach (int i in a)
             {
@@ -81,7 +85,7 @@ namespace ArraysStringsAlgorithms.Tests
                 }
             }
 
-           Assert.IsTrue(check);
+            Assert.IsTrue(check);
         }
 
         [TestMethod]

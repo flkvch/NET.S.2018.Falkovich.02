@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ArraysStringsAlgorithms;
 using NUnit.Framework;
 
@@ -23,17 +24,18 @@ namespace ArrayStringsAlgorithms.NUnitTests
         #endregion
 
         #region FilterDigitsTests
-        [TestCase(7, 7, 1, 2, 3, 4, 5, 6, 7, 68, 69, 70, 15, 17, ExpectedResult = new int[] { 7, 7, 70, 17 })]
-        [TestCase(7, 1, 2, 3, 4, 5, 6, 68, 69, 15, ExpectedResult = new int[] { })]
-        [TestCase(7, 7, 7, 70, 17, ExpectedResult = new int[] { 7, 7, 70, 17 })]
-        [TestCase(5, 5, ExpectedResult = new int[] { 5 })]
-        [TestCase(5, 10, 5, 2, 3, 5, ExpectedResult = new int[] { 5, 5 })]
-        public int[] FilterDigit_ValidCases_ArrayOnlyWithDigit(int digit, params int[] a) =>
-            Algorithms.FilterDigit(digit, a);
+ 
+        [TestCase(new int[] { 7, 1, 2, 3, 4, 5, 6, 7, 68, 69, 70, 15, 17 }, ExpectedResult = new int[] { 7, 7, 70, 17 })]
+        [TestCase(new int[] { 1, 2, 3, 4, 5, 6, 68, 69, 15 }, ExpectedResult = new int[] { })]
+        [TestCase(new int[] { 7, 70, 17 }, ExpectedResult = new int[] { 7, 70, 17 })]
+        [TestCase(new int[] { 7 }, ExpectedResult = new int[] { 7 })]
+        [TestCase(new int[] { 10, 7, 2, 3, 7 }, ExpectedResult = new int[] { 7, 7 })]
+        public int[] FilterDigit_ValidCases_ArrayOnlyWithDigit(int[] a) =>
+            Algorithms.Filter(a, Algorithms.ContainsDigit).ToArray();
 
-        [TestCase(7)]
-        public void FilterDigit_NotValidCases(int digit, params int[] a) =>
-        Assert.Throws<ArgumentNullException>(() => Algorithms.FilterDigit(digit, a));
+        [TestCase(null)]
+        public void FilterDigit_NotValidCases(int[] a) =>
+        Assert.Throws<ArgumentNullException>(() => Algorithms.Filter(a, Algorithms.ContainsDigit));
 
         [TestCase]
         public void FilterDigit_BigValueArray()
@@ -46,11 +48,11 @@ namespace ArrayStringsAlgorithms.NUnitTests
                 a[i] = rnd.Next(-Length / 2, Length / 2);
             }
 
-            a = Algorithms.FilterDigit(7, a);
+            a = Algorithms.Filter(a, Algorithms.ContainsDigit).ToArray();
             bool check = true;
             foreach (int i in a)
             {
-                if (!ContainsDigit(i, 7))
+                if (!Algorithms.ContainsDigit(i))
                 {
                     check = false;
                     break;
@@ -84,38 +86,6 @@ namespace ArrayStringsAlgorithms.NUnitTests
 
             Assert.IsTrue(check);
         }
-        #endregion
-
-        private static bool ContainsDigit(int number, int digit)
-        {
-            int[] digits = ExtractDigits(number);
-            for (int j = 0; j < digits.Length; j++)
-            {
-                if (digits[j] == digit)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static int[] ExtractDigits(int number)
-        {
-            int[] digits = new int[] { };
-            if (number < 0)
-            {
-                number *= -1;
-            }
-
-            while (number > 0)
-            {
-                Array.Resize(ref digits, digits.Length + 1);
-                digits[digits.Length - 1] = number % 10;
-                number /= 10;
-            }
-
-            return digits;
-        }
+        #endregion       
     }
 }

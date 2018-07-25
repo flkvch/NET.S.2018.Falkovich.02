@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ArraysStringsAlgorithms
 {  
@@ -7,7 +8,7 @@ namespace ArraysStringsAlgorithms
     /// </summary>
     public static class Algorithms
     {
-        #region API
+        #region Insert API
         /// <summary>
         /// Number of the bits in int32 number
         /// </summary>
@@ -45,37 +46,31 @@ namespace ArraysStringsAlgorithms
             int numberOut = numberIn | numberSource;
             return numberOut;
         }
+        #endregion
 
+        #region Filter API        
         /// <summary>
-        /// Filter the array: leave only numbers w digit 
+        /// Filters by the specified predicate.
         /// </summary>
-        /// <param name="digit">
-        /// the digit
-        /// </param>
-        /// <param name="a">
-        /// The array
-        /// </param>
-        /// <returns>
-        /// Filtered array
-        /// </returns>
-        public static int[] FilterDigit(int digit, params int[] a)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="a">a.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns>Filtered Enumerable</returns>
+        /// <exception cref="ArgumentNullException">a</exception>
+        public static IEnumerable<T> Filter<T>(this IEnumerable<T> a, Func<T, bool> predicate) 
         {
-            if (a.Length == 0)
+            if (a == null)
             {
                 throw new ArgumentNullException(nameof(a));
             }
 
-            int[] temp = new int[] { };
-            for (int i = 0; i < a.Length; i++)
+            foreach (T i in a)
             {
-                if (ContainsDigit(a[i], digit))
-                {                    
-                    Array.Resize(ref temp, temp.Length + 1);
-                    temp[temp.Length - 1] = a[i];
+                if (predicate(i))
+                {
+                    yield return i;
                 }
             }
-
-            return temp;
         }
 
         /// <summary>
@@ -97,22 +92,30 @@ namespace ArraysStringsAlgorithms
                 throw new ArgumentNullException(nameof(a));
             }
 
-            int[] temp = new int[] { };
-            for (int i = 0; i < a.Length; i++)
+            int resultLength = 0;
+            foreach (int i in a)
             {
-                string digits = a[i].ToString();
-                if (digits.Contains(digit.ToString()))
+                if (i.ToString().Contains(digit.ToString()))
                 {
-                    Array.Resize(ref temp, temp.Length + 1);
-                    temp[temp.Length - 1] = a[i];
+                    resultLength++;
                 }
             }
 
-            return temp;
+            int[] result = new int[resultLength];
+            int pos = 0;
+            foreach (int i in a)
+            {
+                if (i.ToString().Contains(digit.ToString()))
+                {
+                    result[pos++] = i;
+                }
+            }
+
+            return result;
         }
         #endregion
 
-        #region Private
+        #region Private Insert
         /// <summary>
         /// Validation of the edges of the section
         /// </summary>
@@ -134,7 +137,9 @@ namespace ArraysStringsAlgorithms
                 throw new ArgumentException("I or J parametrs should be from 0 to 31");
             }
         }
+        #endregion
 
+        #region Filtering by the digit 7
         /// <summary>
         /// Checks containing digit in the number
         /// </summary>
@@ -147,8 +152,9 @@ namespace ArraysStringsAlgorithms
         /// <returns>
         /// True if contains
         /// </returns>
-        private static bool ContainsDigit(int number, int digit)
+        public static bool ContainsDigit(this int number)
         {
+            int digit = 7;
             int[] digits = ExtractDigits(number);
             for (int j = 0; j < digits.Length; j++)
             {
@@ -170,19 +176,19 @@ namespace ArraysStringsAlgorithms
         /// <returns>
         /// The digits
         /// </returns>
-        private static int[] ExtractDigits(int number)
+        public static int[] ExtractDigits(int number)
         {
-            int[] digits = new int[] { };
             if (number < 0)
             {
                 number *= -1;
             }
 
-            while (number > 0)
+            int[] digits = new int[(int)Math.Log10(number) + 1];
+            int temp = number;
+            for (int i = 0; i < digits.Length; i++)
             {
-                Array.Resize(ref digits, digits.Length + 1);
-                digits[digits.Length - 1] = number % 10;
-                number /= 10;
+                digits[i] = temp % 10;
+                temp /= 10;
             }
 
             return digits;
